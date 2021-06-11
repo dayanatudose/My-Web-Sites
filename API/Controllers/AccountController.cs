@@ -23,7 +23,7 @@ namespace API.Controllers
 
 
         [HttpPost("register")]
-        public async Task<ActionResult<UserDto>> Register([FromBody] RegisterDto registerDto)
+        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
             if (await UserExists(registerDto.Email)) return BadRequest("Email is already taken");
             using var hmac = new HMACSHA512();
@@ -57,10 +57,25 @@ namespace API.Controllers
             {
                 if (computedHash[i] != user.PasswordHash[i]) return Unauthorized("Invalid password");
             }
+           Response.Cookies.Append("Session", _tokenService.CreateToken(user));
+
             return new UserDto {
                 Email = user.Email,
                 Token = _tokenService.CreateToken(user)
             };
+            
+        }
+
+        [HttpPost("logout")] 
+        public async Task<ActionResult<UserDto>> Logout(LogoutDto logoutDto) {
+            Response.Cookies.Delete("Session");
+            var user = await _context.Users.SingleOrDefaultAsync(x => x.Email == logoutDto.Email);
+            if (user == null) return Unauthorized("Invalid email");
+            return new UserDto {
+                Email = user.Email,
+                Token = _tokenService.CreateToken(user)
+            };
+            
         }
         private async Task<bool> UserExists(string email)
         {

@@ -28,10 +28,7 @@ namespace API.Data
                 .SingleOrDefaultAsync();
         }
 
-        public Task<MemberDto> GetMemberAsync()
-        {
-            throw new System.NotImplementedException();
-        }
+        
 
         public async Task<IEnumerable<MemberDto>> GetMembersAsync()
         {
@@ -41,11 +38,6 @@ namespace API.Data
         public async Task<AppUser> GetUserByEmailAsync(string email)
         {
             return await _context.Users.Include(p => p.Photos).SingleOrDefaultAsync(x => x.Email == email);
-        }
-
-        public Task GetUserByEmailAsync(object p)
-        {
-            throw new System.NotImplementedException();
         }
 
         public async Task<AppUser> GetUserByIdAsync(int id)

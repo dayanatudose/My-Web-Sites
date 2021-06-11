@@ -9,7 +9,9 @@ using API.Interfaces;
 using API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -35,6 +37,24 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDistributedMemoryCache();
+
+//         services.AddSession(options =>
+//         {
+//             options.IdleTimeout = TimeSpan.FromSeconds(60);
+//             options.Cookie.HttpOnly = true;
+//             options.Cookie.IsEssential = true;
+//             options.Cookie.Name = "SimpleTalk.AuthCookieAspNetCore";
+//             options.LoginPath = "/Home/Login";
+//             options.LogoutPath = "/Home/Logout";
+//         });
+//         services.Configure<CookiePolicyOptions>(options =>
+// {
+//   options.MinimumSameSitePolicy = SameSiteMode.Strict;
+//   options.HttpOnly = HttpOnlyPolicy.None;
+//   options.Secure = CookieSecurePolicy.Always;
+// });
+
             services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
 );
@@ -61,11 +81,11 @@ namespace API
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));
 
             app.UseRouting();
-            app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000"));
+            app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("http://localhost:3001"));
             app.UseAuthentication();
             app.UseAuthentication();
             app.UseAuthorization();
-
+            // app.UseSession();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
