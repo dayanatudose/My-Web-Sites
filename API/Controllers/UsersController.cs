@@ -59,24 +59,21 @@ namespace API.Controllers
             var user = await _userRepository.GetUserByEmailAsync(User.GetEmail());
             var result = await _photoService.AddPhotoAsync(file);
             if (result.Error != null) return BadRequest(result.Error.Message);
-
             var photo = new Photo {
                 Url = result.SecureUrl.AbsoluteUri,
                 PublicId = result.PublicId
             };
-
             if (user.Photos.Count == 0) {
                 photo.IsMain = true;
             }
-
             user.Photos.Add(photo);
 
             if (await _userRepository.SaveAllAsync()) {
                 return CreatedAtRoute("GetUser", new {email = user.Email}, _mapper.Map<PhotoDto>(photo));
-            }
-               
+            }  
             return BadRequest("Problem adding photo");
         }
+
 
         [HttpDelete("delete-photo/{photoId}")]
         public async Task<ActionResult> DeletePhoto(int photoId){
@@ -92,6 +89,7 @@ namespace API.Controllers
              if (await _userRepository.SaveAllAsync()) return Ok();
 
              return BadRequest("Failed to delete the photo");
+             
         }
 
     }
