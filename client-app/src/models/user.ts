@@ -4,4 +4,6 @@ export interface User {
     email: string;
     telephone: string;
     description: string;
+    city: string;
+    subdomain: string;
 }

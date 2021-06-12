@@ -1,9 +1,34 @@
-import React from 'react';
+import React, { SyntheticEvent, useState } from 'react';
 import styled from 'styled-components';
 import {Top, Image} from '../styles';
 import register from '../img/register.svg';
+import { Redirect } from 'react-router';
 
 const Register = () => {
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [telephone, setTelephone] = useState('');
+    const [password, setPassword] = useState('');
+    const [redirect, setRedirect] = useState(false);
+    const handleSubmit = async (e: SyntheticEvent) => {
+           e.preventDefault(); 
+           await fetch("https://localhost:5001/api/account/register", {
+               method: 'POST',
+               headers: {"Content-Type": "application/json"},
+               body: JSON.stringify({
+                  username,
+                  email,
+                  telephone,
+                  password 
+               })
+           });
+
+           setRedirect(true);
+       }
+       if (redirect) {
+        return <Redirect to="/login"/>
+       }
+      
     return (
     <Container>
         <Image>
@@ -11,16 +36,34 @@ const Register = () => {
             <img src = {register} alt="" />
         </Image>
         <Box>
-        <LogForm >
+        <LogForm onSubmit={handleSubmit}>
             <label>Nume</label>
-             <input type="name" id="name"  />
+             <input 
+             type="name" 
+             id="Username"
+              placeholder="Introduceti numele"
+              onChange={e => setUsername(e.target.value)} />
              <label>Email</label>
-             <input type="email" id="email"   />
+             <input 
+             type="email" 
+             id="Email" 
+             placeholder="Introduceti email-ul"
+             onChange={e => setEmail(e.target.value)} />
              <label>Numar de telefon</label>
-             <input type="tel" id="tel" />
+             <input
+              type="tel"
+               id="Telephone"
+             placeholder="Introduceti numarul de telefon"
+             onChange={e => setTelephone(e.target.value)}/>
              <label>Parola</label>
-             <input type="password" id="password" />
-            <input type="submit" value="Inregistreaza-te" />
+             <input 
+             type="password" 
+             id="Password"
+              placeholder="Introduceti parola"
+              onChange={e => setPassword(e.target.value)}/>
+            <input 
+            type="submit" 
+            value="Inregistreaza-te" />
         </LogForm>
         </Box>
     </Container>
@@ -106,3 +149,5 @@ const LogForm = styled.form`
 `;
 
 export default Register;
+
+

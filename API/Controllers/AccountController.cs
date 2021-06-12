@@ -71,11 +71,9 @@ namespace API.Controllers
             Response.Cookies.Delete("Session");
             var user = await _context.Users.SingleOrDefaultAsync(x => x.Email == logoutDto.Email);
             if (user == null) return Unauthorized("Invalid email");
-            return new UserDto {
-                Email = user.Email,
-                Token = _tokenService.CreateToken(user)
-            };
-            
+            return Ok(new {
+                message = "succes"
+            });
         }
         private async Task<bool> UserExists(string email)
         {

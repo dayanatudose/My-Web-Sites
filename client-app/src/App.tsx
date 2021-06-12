@@ -6,13 +6,12 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import {Switch, Route} from 'react-router-dom';
 import Browse from './pages/Browse';
-
-
+import UserProfile from './pages/UserProfile';
 
 const App = () =>{
   return (
     <div>
-      <GlobalStyle/>
+      <GlobalStyle />
       <Nav />
       <Switch>
       <Route path="/" exact>
@@ -26,6 +25,9 @@ const App = () =>{
        </Route>  
        <Route path="/fotografi" exact>
         <Browse />
+       </Route>
+       <Route path="/profil/:username" exact>
+         <UserProfile />
        </Route>
       </Switch>
     </div>
