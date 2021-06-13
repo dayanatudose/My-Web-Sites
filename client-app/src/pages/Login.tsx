@@ -4,8 +4,13 @@ import {Top, Image} from '../styles';
 import focus from '../img/focus.svg';
 import { Redirect } from 'react-router-dom';
 
+interface Props {
+    isLogged: boolean;
+    setIsLogged: (isLogged: boolean) => void;
+}
 
-const Login = () => {
+const Login = ({isLogged, setIsLogged}:Props) => {
+ 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [redirect, setRedirect] = useState(false);
@@ -22,6 +27,7 @@ const Login = () => {
                })
            });
            setRedirect(true);
+           setIsLogged(true);
     };
     if (redirect) {
         return <Redirect to="/" exact/>

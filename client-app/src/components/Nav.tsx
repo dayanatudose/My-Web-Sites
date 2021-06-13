@@ -1,11 +1,27 @@
 import React from 'react';
 import styled from 'styled-components';
 import {Link} from 'react-router-dom';
+import { User } from '../models/user';
 
-const Nav = () => {
-    
-    return (
-        <StyledNav>
+interface Props {
+    users: User[];
+    isLogged: boolean;
+    setIsLogged: (isLogged: boolean) => void;
+}
+
+export default function Nav({users, isLogged, setIsLogged}: Props) {
+    const handleLogout = async() => {
+        await fetch("https://localhost:5001/api/account/logout", {
+               method: 'POST',
+               headers: {"Content-Type": "application/json"},
+               credentials: "include",
+           });
+           setIsLogged(false);
+    }
+    let menu;
+    if (!isLogged) {
+        menu = (
+            <>
             <h1><Link id = "logo" to = "/">UploadPix</Link></h1>
             <ul>
                 <li>
@@ -18,12 +34,37 @@ const Nav = () => {
                     <Link to = "/login">Login</Link>
                 </li>
             </ul>
+            </>
+       
+        )
+    } else {
+        menu = (
+            <>
+            <h1><Link id = "logo" to = "/">UploadPix</Link></h1>
+            <ul>
+                <li>
+                    <Link to ="/fotografi">Fotografi</Link>
+                </li>
+                <li>
+                    <Link to ="/profil/:username">Profil</Link>
+                </li>
+                <li>
+                    <Link to="/login" onClick={handleLogout}>Logout</Link>
+                </li>
+            </ul>
+            </>
+        )
+    }
+    return (
+        <StyledNav>
+            {menu}
         </StyledNav>
     ); 
 }
 
 const StyledNav = styled.nav`
-    height: 1vh;
+ box-shadow: 0px 5px 30px rgba(0,0,0,0.2);
+     height: 1vh;
     display: flex;
     margin: auto;
     justify-content: space-between;
@@ -48,5 +89,3 @@ const StyledNav = styled.nav`
         padding: 2rem 2rem;
      }
 `;
-
-export default Nav;
